@@ -1,0 +1,22 @@
+[Unit]
+Description=Redis Server
+Author=Hashbang Team
+Requires=docker.service
+Requires=paest-server.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker kill paest-web
+ExecStartPre=-/usr/bin/docker rm -f paest-web
+ExecStartPre=-/usr/bin/docker pull hashbang/paest-web
+ExecStart=/usr/bin/docker run \
+    --name paest-web \
+    --link paest-api:paest-api \
+    -p 80:80 \
+    --log-driver=journald \
+    hashbang/paest-web
+
+ExecStop=/usr/bin/docker stop paest-web
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=Redis Server
+Author=Hashbang Team
+After=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker kill redis
+ExecStartPre=-/usr/bin/docker rm -f redis
+ExecStartPre=-/usr/bin/docker pull redis
+ExecStart=/usr/bin/docker run \
+    --name redis \
+    --log-driver=journald \
+    -d redis
+
+ExecStop=/usr/bin/docker stop redis
+
+[Install]
+WantedBy=multi-user.target
